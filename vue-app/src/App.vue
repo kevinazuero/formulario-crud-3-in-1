@@ -1,103 +1,214 @@
 <template>
-  <div class="container">
-    <h1>Formulario CRUD - Vue + Vite</h1>
+  <div class="min-vh-100 bg-light py-4">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12">
+          <h1 class="text-center mb-4 text-success fw-bold">
+            Gestión de Personas
+          </h1>
 
-    <form @submit.prevent="handleSubmit" class="form">
-      <div class="form-group">
-        <label>DNI:</label>
-        <input type="text" v-model="formData.dni" />
-        <span v-if="errors.dni" class="error">{{ errors.dni }}</span>
-      </div>
+          <!-- Formulario -->
+          <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+              <h5 class="mb-0">
+                {{ editingId ? 'Editar Persona' : 'Registrar Nueva Persona' }}
+              </h5>
+            </div>
+            <div class="card-body">
+              <form @submit.prevent="handleSubmit">
+                <div class="row g-3">
+                  <!-- DNI -->
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">DNI</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        :class="{ 'is-invalid': errors.dni }"
+                        v-model="formData.dni"
+                        placeholder="Ingrese DNI"
+                    />
+                    <div v-if="errors.dni" class="invalid-feedback">
+                      {{ errors.dni }}
+                    </div>
+                  </div>
 
-      <div class="form-group">
-        <label>Nombres:</label>
-        <input type="text" v-model="formData.nombres" />
-        <span v-if="errors.nombres" class="error">{{ errors.nombres }}</span>
-      </div>
+                  <!-- Nombres -->
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Nombres</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        :class="{ 'is-invalid': errors.nombres }"
+                        v-model="formData.nombres"
+                        placeholder="Ingrese nombres"
+                    />
+                    <div v-if="errors.nombres" class="invalid-feedback">
+                      {{ errors.nombres }}
+                    </div>
+                  </div>
 
-      <div class="form-group">
-        <label>Apellidos:</label>
-        <input type="text" v-model="formData.apellidos" />
-        <span v-if="errors.apellidos" class="error">{{ errors.apellidos }}</span>
-      </div>
+                  <!-- Apellidos -->
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Apellidos</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        :class="{ 'is-invalid': errors.apellidos }"
+                        v-model="formData.apellidos"
+                        placeholder="Ingrese apellidos"
+                    />
+                    <div v-if="errors.apellidos" class="invalid-feedback">
+                      {{ errors.apellidos }}
+                    </div>
+                  </div>
 
-      <div class="form-group">
-        <label>Fecha de Nacimiento:</label>
-        <input type="date" v-model="formData.fecha_nacimiento" />
-        <span v-if="errors.fecha_nacimiento" class="error">{{ errors.fecha_nacimiento }}</span>
-      </div>
+                  <!-- Fecha de Nacimiento -->
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Fecha de Nacimiento</label>
+                    <input
+                        type="date"
+                        class="form-control"
+                        :class="{ 'is-invalid': errors.fecha_nacimiento }"
+                        v-model="formData.fecha_nacimiento"
+                    />
+                    <div v-if="errors.fecha_nacimiento" class="invalid-feedback">
+                      {{ errors.fecha_nacimiento }}
+                    </div>
+                  </div>
 
-      <div class="form-group">
-        <label>Género:</label>
-        <div class="radio-group">
-          <label>
-            <input type="radio" value="Masculino" v-model="formData.genero" />
-            Masculino
-          </label>
-          <label>
-            <input type="radio" value="Femenino" v-model="formData.genero" />
-            Femenino
-          </label>
+                  <!-- Género -->
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold d-block">Género</label>
+                    <div class="form-check form-check-inline">
+                      <input
+                          class="form-check-input"
+                          type="radio"
+                          id="masculino"
+                          value="Masculino"
+                          v-model="formData.genero"
+                      />
+                      <label class="form-check-label" for="masculino">
+                        Masculino
+                      </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input
+                          class="form-check-input"
+                          type="radio"
+                          id="femenino"
+                          value="Femenino"
+                          v-model="formData.genero"
+                      />
+                      <label class="form-check-label" for="femenino">
+                        Femenino
+                      </label>
+                    </div>
+                    <div v-if="errors.genero" class="text-danger small">
+                      {{ errors.genero }}
+                    </div>
+                  </div>
+
+                  <!-- Ciudad -->
+                  <div class="col-md-6">
+                    <label class="form-label fw-semibold">Ciudad</label>
+                    <select
+                        class="form-select"
+                        :class="{ 'is-invalid': errors.ciudad }"
+                        v-model="formData.ciudad"
+                    >
+                      <option value="">Seleccione una ciudad</option>
+                      <option value="Quito">Quito</option>
+                      <option value="Guayaquil">Guayaquil</option>
+                      <option value="Cuenca">Cuenca</option>
+                      <option value="Ambato">Ambato</option>
+                      <option value="Manta">Manta</option>
+                    </select>
+                    <div v-if="errors.ciudad" class="invalid-feedback">
+                      {{ errors.ciudad }}
+                    </div>
+                  </div>
+
+                  <!-- Botones -->
+                  <div class="col-12">
+                    <div class="d-flex gap-2 justify-content-end">
+                      <button
+                          v-if="editingId"
+                          type="button"
+                          @click="resetForm"
+                          class="btn btn-secondary"
+                      >
+                        Cancelar
+                      </button>
+                      <button type="submit" class="btn btn-success">
+                        {{ editingId ? 'Actualizar' : 'Registrar' }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Tabla de Personas -->
+          <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+              <h5 class="mb-0">Lista de Personas Registradas</h5>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                  <thead class="table-dark">
+                  <tr>
+                    <th>DNI</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>F. Nacimiento</th>
+                    <th>Género</th>
+                    <th>Ciudad</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-if="personas.length === 0">
+                    <td colspan="7" class="text-center text-muted py-4">
+                      No hay personas registradas
+                    </td>
+                  </tr>
+                  <tr v-for="persona in personas" :key="persona.id">
+                    <td>{{ persona.dni }}</td>
+                    <td>{{ persona.nombres }}</td>
+                    <td>{{ persona.apellidos }}</td>
+                    <td>{{ persona.fecha_nacimiento }}</td>
+                    <td>{{ persona.genero }}</td>
+                    <td>{{ persona.ciudad }}</td>
+                    <td class="text-center">
+                      <button
+                          @click="handleEdit(persona)"
+                          class="btn btn-sm btn-warning me-2"
+                      >
+                        Editar
+                      </button>
+                      <button
+                          @click="handleDelete(persona.id)"
+                          class="btn btn-sm btn-danger"
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
-        <span v-if="errors.genero" class="error">{{ errors.genero }}</span>
       </div>
-
-      <div class="form-group">
-        <label>Ciudad:</label>
-        <select v-model="formData.ciudad">
-          <option value="">Seleccione una ciudad</option>
-          <option value="Quito">Quito</option>
-          <option value="Guayaquil">Guayaquil</option>
-          <option value="Cuenca">Cuenca</option>
-          <option value="Ambato">Ambato</option>
-          <option value="Manta">Manta</option>
-        </select>
-        <span v-if="errors.ciudad" class="error">{{ errors.ciudad }}</span>
-      </div>
-
-      <div class="button-group">
-        <button type="submit" class="btn-submit">
-          {{ editingId ? 'Actualizar' : 'Crear' }}
-        </button>
-        <button v-if="editingId" type="button" @click="resetForm" class="btn-cancel">
-          Cancelar
-        </button>
-      </div>
-    </form>
-
-    <h2>Lista de Personas</h2>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>DNI</th>
-          <th>Nombres</th>
-          <th>Apellidos</th>
-          <th>F. Nacimiento</th>
-          <th>Género</th>
-          <th>Ciudad</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="persona in personas" :key="persona.id">
-          <td>{{ persona.dni }}</td>
-          <td>{{ persona.nombres }}</td>
-          <td>{{ persona.apellidos }}</td>
-          <td>{{ persona.fecha_nacimiento }}</td>
-          <td>{{ persona.genero }}</td>
-          <td>{{ persona.ciudad }}</td>
-          <td>
-            <button @click="handleEdit(persona)" class="btn-edit">Editar</button>
-            <button @click="handleDelete(persona.id)" class="btn-delete">Eliminar</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    </div>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted} from 'vue';
 import axios from 'axios';
 
 export default {
@@ -179,8 +290,9 @@ export default {
     };
 
     const handleEdit = (persona) => {
-      formData.value = { ...persona };
+      formData.value = {...persona};
       editingId.value = persona.id;
+      window.scrollTo({top: 0, behavior: 'smooth'});
     };
 
     const handleDelete = async (id) => {
@@ -227,157 +339,13 @@ export default {
 </script>
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* Estilos mínimos adicionales si son necesarios */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  background: white;
-  border-radius: 15px;
-  padding: 30px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-}
-
-h1 {
-  color: #42b883;
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 2rem;
-}
-
-h2 {
-  color: #35495e;
-  margin: 30px 0 20px;
-}
-
-.form {
-  display: grid;
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #333;
-}
-
-.form-group input,
-.form-group select {
-  padding: 12px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: #42b883;
-}
-
-.radio-group {
-  display: flex;
-  gap: 20px;
-}
-
-.radio-group label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: normal;
-}
-
-.error {
-  color: #e74c3c;
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-.button-group {
-  display: flex;
-  gap: 10px;
-}
-
-button {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-submit {
-  background: #42b883;
-  color: white;
-  flex: 1;
-}
-
-.btn-submit:hover {
-  background: #35a372;
-  transform: translateY(-2px);
-}
-
-.btn-cancel {
-  background: #95a5a6;
-  color: white;
-}
-
-.btn-cancel:hover {
-  background: #7f8c8d;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.table th,
-.table td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
+.table td,
 .table th {
-  background: #42b883;
-  color: white;
-  font-weight: 600
-  }
-.table tr:hover {
-  background: #f5f5f5;
-}
-.btn-edit,
-.btn-delete {
-  padding: 6px 12px;
-  margin-right: 5px;
-  font-size: 14px;
-}
-.btn-edit {
-  background: #3498db;
-  color: white;
-}
-.btn-edit:hover {
-  background: #2980b9;
-}
-.btn-delete {
-  background: #e74c3c;
-  color: white;
-}
-.btn-delete:hover {
-  background: #c0392b;
+  vertical-align: middle;
 }
 </style>
